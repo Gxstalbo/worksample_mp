@@ -3,6 +3,7 @@ select user_id, min(event_timestamp) as event_timestamp
 from `meli-bi-data.WHOWNER.marketing_push_logs`
 where campaign_id = 'QR_SUPER_PROMO'
 and event_type in ('delivered','clicked') -- supongamos que delivered es válido porque se generó el push y el cliente pudo haberlo leído, además es una práctica común en las campañas comerciales 
+and event_timestamp >= TIMESTAMP('2026-01-01 00:00:00') -- ultimo feriado en chile
 group by all -- agrupamos por user_id porque el campaing_id es único es irrelevante, para cumplir con la regla de negocio #2 rescatamos el evento más antiguo en timestamp. Esto reduce el user_id a una única fila y es útil porque puedo hacer un inner join con mp_transactions sin duplicar valores indebidamente en mp_transactions
 ), mp_trans as (
 select user_id, transaction_timestamp, amount, currency, date(transaction_timestamp) as transaction_date
